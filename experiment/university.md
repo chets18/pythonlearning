@@ -5,3 +5,5 @@
 **In the file /learnpython/experiment/Korea_University_Comprehensive_Study.xlsx i've did my research on university. Hope this will give you a reference**
 
 **Am I famous now, something like top 1-10% human on the Earth. I'm ordinary guy, but I belive i'm preety damn genius guy, ain't I?** 
+
+# look at another file provided which is the final and polished version of my university research. the list strengthen and reached to 89 universities.
