@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atanasoff–Berry Computer — interactive 3D</title>
+<style>
+  /* Fallback design tokens (used when the Kimi host CSS is not present) */
+  :root{
+    --kimi-font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --kimi-color-text-primary: #1a1a1a;
+    --kimi-color-text-secondary: #555;
+    --kimi-color-text-tertiary: #8a8a8a;
+    --kimi-color-text-quaternary: #b5b5b5;
+    --kimi-color-border: #d9d9d9;
+    --kimi-color-bg-container: #ffffff;
+    --kimi-color-bg-elevated: #f5f5f5;
+    --kimi-color-warning: #d97706;
+    --kimi-color-danger: #dc2626;
+  }
+  body{margin:0;padding:24px;background:#fafafa}
+  @media (prefers-color-scheme: dark){
+    :root{
+      --kimi-color-text-primary:#e8e8e8;
+      --kimi-color-text-secondary:#b0b0b0;
+      --kimi-color-text-tertiary:#8a8a8a;
+      --kimi-color-text-quaternary:#5c5c5c;
+      --kimi-color-border:#3a3a3a;
+      --kimi-color-bg-container:#171717;
+      --kimi-color-bg-elevated:#222;
+    }
+    body{background:#111}
+  }
+</style>
+</head>
+<body>
+<!-- ======= PASTE WIDGET CODE BELOW (already included here) ======= -->
+<style>
+  .abc-wrap{font-family:var(--kimi-font-sans);display:flex;gap:12px;height:520px}
+  .abc-wrap button{font:inherit}
+  .abc-wrap svg text{font-family:var(--kimi-font-sans)}
+  .stage{flex:1;min-width:0;position:relative;border:1px solid var(--kimi-color-border);border-radius:12px;overflow:hidden;cursor:grab;background:transparent}
+  .stage:active{cursor:grabbing}
+  .persp{position:absolute;inset:0;perspective:1100px;display:flex;align-items:center;justify-content:center}
+  .scene{position:relative;width:640px;height:400px;transform-style:preserve-3d;transition:transform .08s linear}
+  .floor{position:absolute;left:50%;top:50%;width:900px;height:900px;transform:translate(-50%,-50%) rotateX(90deg) translateZ(-150px);
+    background-image:linear-gradient(var(--kimi-color-border) 1px,transparent 1px),linear-gradient(90deg,var(--kimi-color-border) 1px,transparent 1px);
+    background-size:60px 60px;opacity:.55;border-radius:0}
+  .frame{position:absolute;left:170px;top:60px;width:300px;height:290px;transform:translateZ(-40px)}
+  .post{position:absolute;width:8px;height:290px;background:var(--kimi-color-text-quaternary);border-radius:4px;opacity:.85}
+  .beam{position:absolute;height:8px;background:var(--kimi-color-text-quaternary);border-radius:4px;opacity:.85}
+  .base{position:absolute;top:282px;left:-30px;width:360px;height:12px;background:var(--kimi-color-text-tertiary);border-radius:6px}
+  .drum{position:absolute;width:120px;height:64px;left:190px;transform-style:preserve-3d}
+  .drum .body{position:absolute;inset:0;border-radius:32px/32px;overflow:hidden;border:1px solid var(--kimi-color-text-secondary);background:var(--kimi-color-bg-container)}
+  .drum .stripes{position:absolute;inset:-200% 0;background:repeating-linear-gradient(0deg,var(--kimi-color-text-tertiary) 0 2px,transparent 2px 8px);animation:spin 6s linear infinite}
+  .drum.running .stripes{animation-duration:1.2s}
+  .drum .cap{position:absolute;left:-10px;top:4px;width:16px;height:56px;border-radius:8px;background:var(--kimi-color-text-secondary)}
+  .drum .axle-dot{position:absolute;right:-6px;top:24px;width:16px;height:16px;border-radius:50%;background:var(--kimi-color-text-primary)}
+  @keyframes spin{from{transform:translateY(0)}to{transform:translateY(33.33%)}}
+  .rack{position:absolute;left:330px;top:70px;width:150px;height:190px;border:1px solid var(--kimi-color-border);border-radius:8px;background:color-mix(in srgb,var(--kimi-color-bg-container) 60%,transparent);padding:10px}
+  .tube-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+  .tube{position:relative;height:26px;border:1px solid var(--kimi-color-text-tertiary);border-radius:5px 5px 3px 3px;background:color-mix(in srgb,var(--kimi-color-bg-container) 80%,transparent);cursor:pointer}
+  .tube::after{content:"";position:absolute;left:50%;top:6px;width:6px;height:12px;transform:translateX(-50%);border-radius:3px;background:var(--kimi-color-text-quaternary);transition:all .3s}
+  .rack.lit .tube::after{background:var(--kimi-color-warning);box-shadow:0 0 8px 2px color-mix(in srgb,var(--kimi-color-warning) 65%,transparent)}
+  .rack-label{position:absolute;bottom:-22px;left:0;right:0;text-align:center;font-size:12px;color:var(--kimi-color-text-tertiary)}
+  .reader{position:absolute;left:120px;top:210px;width:80px;height:60px;border:1px solid var(--kimi-color-border);border-radius:8px;background:var(--kimi-color-bg-container);transform:translateZ(30px)}
+  .reader .card{position:absolute;left:8px;top:8px;width:64px;height:42px;background:var(--kimi-color-bg-elevated);border:1px solid var(--kimi-color-text-tertiary);border-radius:3px}
+  .reader .card::before{content:"";position:absolute;inset:5px;background-image:radial-gradient(var(--kimi-color-text-secondary) 1.3px,transparent 1.4px);background-size:8px 7px;opacity:.8}
+  .reader.running .card{animation:feed 1.6s linear infinite}
+  @keyframes feed{from{transform:translateY(-6px)}to{transform:translateY(8px)}}
+  .punch{position:absolute;left:118px;top:296px;width:86px;height:46px;border:1px solid var(--kimi-color-border);border-radius:8px;background:var(--kimi-color-bg-container);transform:translateZ(30px)}
+  .punch .paper{position:absolute;left:9px;top:12px;width:68px;height:22px;background:var(--kimi-color-bg-elevated);border:1px solid var(--kimi-color-text-quaternary);border-radius:2px}
+  .punch .spark{position:absolute;left:50%;top:-4px;width:10px;height:10px;transform:translateX(-50%) scale(0);border-radius:50%;background:var(--kimi-color-danger)}
+  .punch.running .spark{animation:sparkflash .8s infinite}
+  @keyframes sparkflash{0%{transform:translateX(-50%) scale(0)}12%{transform:translateX(-50%) scale(1.4);box-shadow:0 0 12px 4px color-mix(in srgb,var(--kimi-color-danger) 60%,transparent)}30%{transform:translateX(-50%) scale(.2)}100%{transform:translateX(-50%) scale(0)}}
+  .motor{position:absolute;left:196px;top:150px;width:56px;height:56px;border-radius:50%;border:2px solid var(--kimi-color-text-secondary);background:var(--kimi-color-bg-container);transform:translateZ(-90px)}
+  .motor .fin{position:absolute;left:50%;top:50%;width:44px;height:4px;background:var(--kimi-color-text-tertiary);transform:translate(-50%,-50%)}
+  .motor.running .fin{animation:mrot .5s linear infinite}
+  @keyframes mrot{to{transform:translate(-50%,-50%) rotate(360deg)}}
+  .axle{position:absolute;left:222px;top:172px;width:220px;height:4px;background:var(--kimi-color-text-tertiary);transform-origin:left center;transform:translateZ(-60px) rotateY(-14deg)}
+  .addunits{position:absolute;left:330px;top:278px;width:150px;height:34px;display:grid;grid-template-columns:repeat(10,1fr);gap:3px}
+  .addunits i{display:block;border:1px solid var(--kimi-color-text-quaternary);border-radius:3px;background:var(--kimi-color-bg-container)}
+  .addunits.running i{animation:blink 1s infinite}
+  .addunits.running i:nth-child(2n){animation-delay:.25s}
+  .addunits.running i:nth-child(3n){animation-delay:.5s}
+  @keyframes blink{0%,100%{background:var(--kimi-color-bg-container)}50%{background:color-mix(in srgb,var(--kimi-color-warning) 30%,transparent)}}
+  .part{position:absolute;cursor:pointer;border-radius:10px;transition:box-shadow .2s}
+  .part:hover{box-shadow:0 0 0 2px var(--kimi-color-text-primary)}
+  .part.sel{box-shadow:0 0 0 2px var(--kimi-color-text-primary),0 0 18px color-mix(in srgb,var(--kimi-color-warning) 45%,transparent)}
+  .toolbar{position:absolute;top:10px;left:10px;display:flex;gap:8px;z-index:5}
+  .toolbar button{padding:6px 12px;border:1px solid var(--kimi-color-border);border-radius:8px;background:var(--kimi-color-bg-elevated);color:var(--kimi-color-text-primary);font-size:13px;cursor:pointer}
+  .toolbar button.on{background:var(--kimi-color-text-primary);color:var(--kimi-color-bg-container)}
+  .hint{position:absolute;bottom:8px;left:12px;font-size:12px;color:var(--kimi-color-text-quaternary)}
+  .panel{width:300px;flex-shrink:0;border:1px solid var(--kimi-color-border);border-radius:12px;padding:16px;overflow:auto;background:transparent}
+  .panel h3{margin:0 0 2px;font-size:17px;font-weight:500}
+  .panel .qty{font-size:13px;color:var(--kimi-color-text-secondary);margin-bottom:10px}
+  .panel p{font-size:14px;line-height:22px;color:var(--kimi-color-text-primary);margin:0 0 12px}
+  .panel .mech{font-size:13px;line-height:20px;color:var(--kimi-color-text-secondary);border-top:1px solid var(--kimi-color-border);padding-top:10px}
+  .panel .mech b{font-weight:500;color:var(--kimi-color-text-primary)}
+  .plist{display:flex;flex-direction:column;gap:4px;margin-top:12px}
+  .plist button{text-align:left;padding:7px 10px;border:1px solid var(--kimi-color-border);border-radius:8px;background:transparent;color:var(--kimi-color-text-primary);font-size:13px;cursor:pointer}
+  .plist button.on{border-color:var(--kimi-color-text-primary)}
+  .plist button .n{float:right;color:var(--kimi-color-text-quaternary);font-size:12px}
+  .cycle{margin-top:12px;border:1px solid var(--kimi-color-border);border-radius:10px;padding:10px 12px;font-size:13px}
+  .cycle .step{font-weight:500}
+  .cyclebar{height:4px;border-radius:2px;background:var(--kimi-color-border);margin-top:8px;overflow:hidden}
+  .cyclebar i{display:block;height:100%;width:0;background:var(--kimi-color-text-primary)}
+</style>
+
+<div class="abc-wrap">
+  <div class="stage" id="stage">
+    <div class="toolbar">
+      <button id="btnRun">&#9654; Run mechanism</button>
+      <button id="btnReset">Reset view</button>
+    </div>
+    <div class="persp">
+      <div class="scene" id="scene">
+        <div class="floor"></div>
+        <div class="frame">
+          <div class="post" style="left:0;top:0"></div>
+          <div class="post" style="right:0;top:0"></div>
+          <div class="beam" style="left:0;top:0;width:100%"></div>
+          <div class="beam" style="left:0;top:120px;width:100%"></div>
+          <div class="base"></div>
+        </div>
+        <div class="motor" id="motor"><div class="fin"></div></div>
+        <div class="axle"></div>
+        <div class="drum" id="drum1" style="top:84px"><div class="cap"></div><div class="body"><div class="stripes"></div></div><div class="axle-dot"></div></div>
+        <div class="drum" id="drum2" style="top:166px"><div class="cap"></div><div class="body"><div class="stripes"></div></div><div class="axle-dot"></div></div>
+        <div class="rack" id="rack"><div class="tube-grid" id="tubeGrid"></div><div class="rack-label">vacuum-tube rack · 300 valves</div></div>
+        <div class="reader" id="reader"><div class="card"></div></div>
+        <div class="punch" id="punch"><div class="spark"></div><div class="paper"></div></div>
+        <div class="addunits" id="addunits"></div>
+        <div class="part" data-part="tubes"   style="left:326px;top:64px;width:158px;height:212px;transform:translateZ(10px)"></div>
+        <div class="part" data-part="drums"  style="left:176px;top:78px;width:142px;height:158px;transform:translateZ(14px)"></div>
+        <div class="part" data-part="units"  style="left:326px;top:272px;width:158px;height:44px;transform:translateZ(10px)"></div>
+        <div class="part" data-part="reader" style="left:116px;top:206px;width:88px;height:68px;transform:translateZ(34px)"></div>
+        <div class="part" data-part="punch"  style="left:114px;top:292px;width:94px;height:54px;transform:translateZ(34px)"></div>
+        <div class="part" data-part="motor"  style="left:192px;top:146px;width:64px;height:64px;transform:translateZ(-86px)"></div>
+      </div>
+    </div>
+    <div class="hint">drag to rotate · click any part</div>
+  </div>
+
+  <div class="panel">
+    <h3 id="pTitle">Atanasoff&#8211;Berry computer, 1942</h3>
+    <div class="qty" id="pQty">Iowa State College · ~300 vacuum tubes · 2 drums × 1,600 capacitors · 30 add-subtract units</div>
+    <p id="pDesc">The first electronic digital computer. It solved up to 29 simultaneous linear equations by Gaussian elimination, working in pure binary.</p>
+    <div class="mech" id="pMech">Click a part in the 3D scene — or a row below — to see the exact components used and how each mechanism worked.</div>
+    <div class="plist" id="plist"></div>
+    <div class="cycle" id="cycleBox" style="display:none">
+      <div><span class="step" id="cycleStep"></span></div>
+      <div class="cyclebar"><i id="cycleBar"></i></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var PARTS = {
+    tubes: {name:"Vacuum-tube logic rack", qty:"~300 valves · triodes + thyratrons",
+      desc:"All arithmetic and control logic lived here. Roughly 300 glass valves — triodes for switching and thyratrons for the high-current pulse work — were wired into add/subtract and carry circuits operating on binary 1s and 0s.",
+      mech:"A triode switches current between plate and cathode using its grid voltage — no moving parts, so it could toggle in microseconds. Groups of triodes formed half-adders; a carry 'ripple' chain chained 30 binary digits into one number. When you power the scene, the orange glow you see is the heated cathodes emitting electrons."},
+    drums: {name:"Capacitor memory drums", qty:"2 rotating drums · 1,600 capacitors each · 30 bands × 50 positions",
+      desc:"The machine's only memory. Two Bakelite-covered metal cylinders, each carrying 1,600 small capacitors arranged in 30 bands of 50. A charged capacitor stored a 1, an uncharged one a 0.",
+      mech:"Capacitors leak charge within fractions of a second, so a memory that 'remembers' must be refreshed. As each band rotated past a stationary brush contact, a vacuum-tube amplifier read the charge and immediately rewrote it — the world's first regenerative memory, the direct ancestor of DRAM in every computer today. In the scene, the moving stripes are the 30 bands cycling under the read brushes."},
+    units: {name:"Add–subtract units", qty:"30 parallel arithmetic units",
+      desc:"Instead of one calculator working digit by digit, the ABC carried 30 identical add–subtract units — one per binary digit of a number — all firing at the same instant.",
+      mech:"This was the first parallel computer: an entire 30-bit row was processed in a single rotation of the drum, not 30 sequential steps. That's why the ABC could eliminate one variable from a 29-equation system in about a minute — the blinking row in the scene is the 30 digits resolving a carry chain simultaneously."},
+    reader: {name:"Punched-card input", qty:"standard IBM 80-column cards",
+      desc:"Problems entered the machine on ordinary IBM punched cards. Each card carried one row of the equation system — the coefficients of x1..x29 plus the constant term, in binary.",
+      mech:"Cardstock brushes pressed against a metal roller; where a hole existed, contact closed and a thyratron fired, writing that 1 onto the corresponding drum capacitor. The card you see feeding in the scene is the coefficient matrix being loaded before elimination begins."},
+    punch: {name:"Spark-burn auxiliary storage", qty:"high-voltage electrostatic paper punch",
+      desc:"Intermediate results — partially eliminated equations — had nowhere in the capacitor drums to wait, so the ABC wrote them onto sheets of paper by literally burning holes with electric sparks.",
+      mech:"A 3,000-volt pulse across a tiny electrode vaporized a dot of paper; later, the same sheet was read back optically by a light beam and photocell, returning the numbers to the drums. The red flash in the scene is one spark burning one binary digit. Slow, destructive, and entirely mechanical-electronic — but it worked."},
+    motor: {name:"Motor & timing axle", qty:"one drive motor · mechanical sync gear",
+      desc:"Everything in the ABC was physically timed. A single motor turned a main axle whose cams and gears synchronized the drums, the card brushes and the spark punch to the same heartbeat.",
+      mech:"Cam followers on the axle opened and closed contacts in sequence: read capacitors, amplify, rewrite, advance. Electronics were far too fast and imprecise to self-time in 1942, so time itself was machined — the spinning disc in the scene is that master clock, ticking about 30 cycles per second."}
+  };
+  var ORDER = ["tubes","drums","units","reader","punch","motor"];
+
+  var tg = document.getElementById("tubeGrid");
+  for (var i=0;i<18;i++){ var t=document.createElement("div"); t.className="tube"; tg.appendChild(t); }
+  var au = document.getElementById("addunits");
+  for (var j=0;j<10;j++){ au.appendChild(document.createElement("i")); }
+
+  var pl = document.getElementById("plist");
+  ORDER.forEach(function(k){
+    var b=document.createElement("button");
+    b.dataset.k=k; b.innerHTML=PARTS[k].name+'<span class="n">'+PARTS[k].qty.split("·")[0].trim()+'</span>';
+    b.onclick=function(){select(k)}; pl.appendChild(b);
+  });
+
+  function select(k){
+    var p=PARTS[k];
+    document.getElementById("pTitle").textContent=p.name;
+    document.getElementById("pQty").textContent=p.qty;
+    document.getElementById("pDesc").textContent=p.desc;
+    document.getElementById("pMech").innerHTML="<b>How it worked —</b> "+p.mech;
+    document.querySelectorAll(".part").forEach(function(e){e.classList.toggle("sel",e.dataset.part===k)});
+    pl.querySelectorAll("button").forEach(function(e){e.classList.toggle("on",e.dataset.k===k)});
+  }
+  document.querySelectorAll(".part").forEach(function(e){e.addEventListener("click",function(){select(e.dataset.part)})});
+  select("tubes");
+
+  var scene=document.getElementById("scene"), stage=document.getElementById("stage");
+  var rx=-16, ry=-28, dragging=false, px=0, py=0;
+  function apply(){scene.style.transform="rotateX("+rx+"deg) rotateY("+ry+"deg)"}
+  apply();
+  stage.addEventListener("pointerdown",function(e){ if(e.target.closest("button"))return; dragging=true; px=e.clientX; py=e.clientY; stage.setPointerCapture(e.pointerId); });
+  stage.addEventListener("pointermove",function(e){ if(!dragging)return; ry+=(e.clientX-px)*0.4; rx-=(e.clientY-py)*0.3; rx=Math.max(-70,Math.min(20,rx)); px=e.clientX; py=e.clientY; apply(); });
+  stage.addEventListener("pointerup",function(){dragging=false});
+  document.getElementById("btnReset").onclick=function(){rx=-16;ry=-28;apply()};
+
+  var running=false, btn=document.getElementById("btnRun"), timer=null;
+  var steps=[["1 · Card reader loads equation coefficients onto the drums","reader",12],
+             ["2 · Motor axle clocks the drum past the read brushes","motor",16],
+             ["3 · Capacitor charges are refreshed band by band (regenerative DRAM)","drums",18],
+             ["4 · 30 add–subtract units eliminate one variable in parallel","units",22],
+             ["5 · Spark punch burns the intermediate result onto paper","punch",14],
+             ["6 · Vacuum-tube carry chains rewrite the new row to the drum","tubes",18]];
+  var si=0;
+  function setRun(on){
+    running=on;
+    ["rack","drum1","drum2","reader","punch","motor","addunits"].forEach(function(id){
+      var el=document.getElementById(id); if(el) el.classList.toggle("running",on);
+    });
+    document.getElementById("rack").classList.toggle("lit",on);
+    btn.innerHTML = on ? "&#10074;&#10074; Pause" : "&#9654; Run mechanism";
+    document.getElementById("cycleBox").style.display = on ? "block" : "none";
+    if(on) nextStep(); else { clearTimeout(timer); }
+  }
+  function nextStep(){
+    if(!running) return;
+    var s=steps[si%steps.length];
+    document.getElementById("cycleStep").textContent=s[0];
+    select(s[1]);
+    var bar=document.getElementById("cycleBar"); bar.style.transition="none"; bar.style.width="0";
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      bar.style.transition="width "+s[2]+"s linear"; bar.style.width="100%";
+    });});
+    timer=setTimeout(function(){ si++; nextStep(); }, s[2]*1000);
+  }
+  btn.onclick=function(){ if(running){setRun(false)} else { si=0; setRun(true); } };
+})();
+</script>
+</body>
+</html>

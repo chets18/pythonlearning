@@ -1,0 +1,61 @@
+what are programming language?
+
+yes, i got this question on my mind. so, to talk about this, based on my understanding, programming languages are set of rules. they command computer what to do ig. 
+
+how they are made?
+i google it and got this, "Programming languages are created by writing a program—using an existing programming language—that acts as a translator." and that translator convert our program into binary, 0 and 1. so, is it assembly? python written in assembyly? no, not necesserily, to write a programming language you have to rely on other programming languge, but if you can create your own translator good for youself, but it's time consuming, isn't it? if wheels are already build and you're trying to build a car, you doesn't need to manufacture every single parts by yourself.
+
+if we're talking about assembly language, as you probably study low-level programming language, it's a low-level language. it's one step ahead from binary code. Think like, we were making a translator which is assember in assembly language case and accidently build a programming language, ALthough, that's not exactly what had happened, but we can understand this in such a way. 
+
+so, we understand, to write a programming language we need a translator that translator the code to the computer which is machine code. and do you know? First programming language was Machine language itself. it was both programming language and translator. However, googling it said machine language is a programming language not an assembler or translator. and it does looks like, 001010 111010001001. looks scary, right? i can't even imagine who was a first machine language programmer and how he coded his first sum program.
+
+so, just i said, we need translator to write a programming language, and a early translators were assemblers, and there are many assemblers out there. Examples include NASM, MASM, GAS (GNU Assembler), FASM, and TASM.They translate different syntaxes to machine code. Early languages included Machine Language → Assembly → FORTRAN → Lisp → COBOL → BASIC.
+
+so, wait, it's hard, complecated and more doubtful to understand such way. 
+now, we should first understand the entire history of computer. keeping the thing on mind, said by jensen huang (founder of NVIDIA, in case you don't know). we'll be keeping things more easy and clear. 
+
+About me?
+I'm a learner and aiming for top, top in programming, founder, building something. about my qualification and age, i just graduated high school and currently looking out oppurtunity in south korea for higher studies. i'm 17 years and 7 months old. 
+
+if you ask for table of content, i can't provide but we will be learning, almost everything about computer, programming and softwares. including robotics in future. things we'll cover, how computers works, if i were in stone age can i build a computer?, yeah, that's it. in future, we'll be creating more exciting projects, and enhance our learning.
+
+my vision and method of learning.
+1. I belive in learning practically, even though at this moment i don't have a hardware, what i have is a broken keypad phone of my grandmother.
+2. Analogy, i love pictures, lenses, and pattern analysis. Which is also why, you'll notice multiple analogies, comparison and different pictures throughout this journey.
+3. interaction, of course i won't be telling you everything. i want you to do your homework, learn by searching, googling, or using AI.
+4. information is infinite, so, you can't store everything in your brain. but you can create a shortcuts to your memory, how? we'll learn later.
+
+
+let's start:
+ALright, i'm in stone world. and i have kinda memory on vaccum tubes. 
+first thing to get in mind, everything about computing using machine is applicable just using 0 and 1. where, 0 means OFF and 1 means ON. In early stage, 0 symbolize no hole, and 1 symbolize hole, which was a physical logic to think.
+
+Now, we come to vacuum tube era, think of it like a little bulkier and shorter thermometer to which require electric current to operate. i am really amazed by the creativity and knowledge of engineering for this tiny tube at that time. look at the image below. this is how vacuum tubes were created. vacuum tubes were made of glass and nothing inside it. if you ask me, which one came first, tungsten incandescent light bulb or vacuum tube, it's the vacuum tube. interesting fact is, 1904 - vacuum tube and 1906 - tungsten bulb. John Ambrose Fleming is a creator of vacuum tube. "Who worked in both Thomas Edision and Guglielmo's radio company." Note this is really an interesting fact to know about if you want to create something to the world. whoever big companies or creator you pick must be connected with another sucessful person. somebody said, Thomas Edision was connected with Nikola Tesla. so, start reaching out to extraordinary person around you.
+
+let's continue, we can think like, tiktok inspired from instagram, x inspired from linkedin but for different audience. similarly, vacuum tube was inspired from thomas carbon bulb and Edision effect. For, Edision the feature that made a bulb tube was a drawback but for flaming it became new technology.
+
+Talking about, how vacuum tube actually works? More volatage supply - ON, less/no voltage supply - OFF. also, a grid inside also supply voltage to control whether electron jumps or not. in early days, AND, NOR, NAND, OR gates were based on this concept. 
+drawbacks of vacuum tube are: it required contineous current supply, more bulkier, not portable, slow, and hard and complex for a big data.
+The primary purpose of a vacuum tube is to control and manipulate the flow of electric current through a vacuum.
+
+i found something interesting, a quick question, who's Ada lovelace? first programmer? 
+let me give you a time, she write a program in 1840s. wait, isn't it way before than even a vacuum tube were built. Actually, yes, it shocked me very well. Remember this, charles babbage built a computer, right? yeah, he did, but it was a mechanical cycle more than a digital computers. what he built was a calculator which is massive and works by grears and physical movement rather than typing or displaying something in a screen. and about ada lovelace she helped him building this, She wrote the first algorithm for a purely mechanical computer powered by gears, cranks, and brass cogs."mechanical".
+
+Back to the topic, now, world sees vacuum tube and started experimenting and came in use in radios and calculation. and Havard introduced Mark I to the world (after 40 years vacuum were built). Did Mark-I use vacuum tube? no, it didn't. Mark-I is called last electromechanical computer, mechanical (think like a mechanical calculator) and electro (since, i used electricity to power it's moters, relays). So, which technology uses vacuum tube, ENIAC, yeah it uses 18k vacuum tubes to do calculation, each tube could hold 0 and 1 until its powered. Things are getting out of hand, the actual device we should study is zuse z3, it was a first programmable computer in 1941 even before mark-I but due to WWII our textbook more focused on UK and US achivements. read this, for more, i didn't cover all, cuz' if a wheel is already built why to spend time building another isn't it, https://ftms.edu.my/v2/wp-content/uploads/2019/02/csca0101_ch01.pdf 
+note: as i talked about vacuum tubes. it have it's own family too. and it depends on for what task you're using  it. such as ABC computer used triodes and thyratrons, similarly there are more. read this, Vacuum tubes are used primarily to amplify weak electrical signals, switch high-voltage currents, and rectify alternating current (AC) into direct current (DC) in high-end audio equipment, musical instrument amplifiers, and high-power radio transmitters.
+previously, i thought vacuum tubes are just like a light bulb using which we can keep one end on while another end off just like a charged head tooth. but i was not completely right. there are  5+ types of vacuum they are, 
+• Diode: allow current to flow in only one direction, primarily used for AC-to-DC rectification.
+• Triode: Adds a control grid between the cathode and anode to regulate electron flow, enabling signal amplification and switching. (this one is what i talked previously)
+• Tetrode: Incorporates a fourth electrode called a screen grid to reduce internal capacitance between the grid and anode, improving high-frequency performance.
+• Pentode: Introduces a fifth electrode (the suppressor grid) to prevent secondary electron emission from reaching the screen grid, delivering cleaner and more efficient power amplification.
+• Multi-electrode Tubes: Includes hexodes (6 electrodes), heptodes (7 electrodes), and octodes (8 electrodes) designed for specialized high-frequency, mixing, and tuning applications.
+
+run abc-computer.html for deeper understand of ABC.
+
+after which, everything evolve, one from another same components used vacuum tubes, mechanical algorithm and memory drums. 
+so, what's memory drums?
+it's a device used as a memory, picture this like, a cylinder rolling and a mechanism reads and write on a sheet of magnet. While, this was not so effective, on regards magnetic core memory is developed. 
+what's magnetic core memory? it's like a web, made of copper wire and on each node there's a small size like a small earing. if you want to know how it work, think like it's a grid and you supply or stop voltage from a row and colum and the intersection result is observable, which make it earier to find, edit information. 
+
+i am doubtful, so, 
+can i write new programming language using C or python itself?
