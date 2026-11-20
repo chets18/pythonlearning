@@ -1,0 +1,16 @@
+CLI is an abbreviation of command line interface.
+
+It is a text based interface.
+
+CLI tool is what we'll build.
+
+to build this first we need to map what the program will do. 
+1) give storage information to user, like how many storage left (in total), how many used.
+2) size of each folder (a custom command, we'll ask user do you wanat to know folder size of any specific folder)
+3) what's currently running/consuming memory like task manager
+4) find what time and date it is, 
+5) digital wellbeings, like (how long you've been using the device, filter last week, today, this week, average screentime)
+6) file finder (find any file in your system by name)
+7) find videos (how many .mp4 files are in my system, with location)
+8) files arrangement with file extention, such as (create a folder in existing folder such as downloads and add all beside from sub-folder, cut and paste all .html file in downloads folder in html folder, similar for images (png, jpg, jptg, wief will be on same folder), videos .mp4 in one folder, allow user to give what file extention why want a folder, means similar file type in one folder)
+9) 
